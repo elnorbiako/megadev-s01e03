@@ -1,106 +1,35 @@
 support desk · kb
-0002 · Split #4471 and deduplicate by cause
+#4471 · closure outcomes and desk guidance
 
 owner elnorbiako
-accepted
+closed
 reviewed 2026-10-29 · 0 days ago
 
-Replaces: decision 0001. The accepted original remains unchanged as the historical record.
+Current outcome
 
-What the desk should do now
+The course desk update reports that #4471 closed on 5 October. Its two problems ended differently:
 
-Do not treat #4471 as one known problem. Split its reports into the shared parser issue and the booking-v3 date-hint issue. The table below computes the counts from unique report IDs, tenant locales and booking forms.
+The desk closed #4471 on 2026-10-05. Source checked 2026-10-29.
 
-Parser ticket: the shared parser reads month first although these tenants write day first.
-Hint ticket: booking-v3 prints MM/DD/YYYY while its form reads dates in the tenant’s day-first order.
+cause	export reports	engineering outcome	reason	ticket
+parser	379	fixed: fix(dates): parse dd/mm for eu locales	completed	#1
+hint	33	won't fix: booking-v3 form retired	not planned	#2
+The parser was fixed. The hint was not fixed: booking-v3 was retired, and engineering chose not to fix it. Closed does not mean that both defects were repaired.
+What changed since the export
 
-412 reports merged into #4471 · 2 causes
+The export ends on 4 October. The engineering update is later evidence about closure, not a change to the original report counts or tenant directory. The cause split and complete report membership remain in the signed analysis and replacement triage decision.
 
-cause	reports	tagged as	tenants	seen	
-parser	379	parser ×356 · hint ×23	11	2026-04-01 → 2026-10-04	#4471
-hint	33	hint ×18 · parser ×15	3	2026-04-17 → 2026-09-22	not this ticket — no ticket of its own
+That accepted decision remains unchanged as the historical record of our analysis. This page supersedes its pending-fix guidance with the later closure outcomes. Do not present the original “known, one fix queued” incident page as current status.
 
-5 reports read as a one-day move; filed under parser by tenant.
+Desk guidance
 
-The intake tag is a browser-based guess, not a diagnosis. Classify using the tenant’s locale and booking form, together with the report’s channel. Use the actual runtime logic in causes.ts and locales.ts rather than a second hand-maintained list.
+For the shared parser, record the engineering fix and close its ticket as completed. For the booking-v3 hint, record form retirement and close its ticket as not planned, not completed. Do not equate retiring a feature with correcting its behavior.
 
-Evidence and limits
+Continue triaging reports by verified cause and affected path, not matching subjects or browser-derived intake tags. For reports arriving after closure, check the deployed parser version and whether the reporter still uses a retired form before merging. Unknown tenants and conflicting evidence remain separate pending investigation.
 
-Parser example R-41200: Harbour Dental (en-GB, booking-v2, app) intended 7 April; the reminder used 4 July. Hint example R-41230: Copper Studio (es-ES, booking-v3, form) intended 6 January; the client came on 1 June.
+The five desk-note reports R-41202, R-41209, R-41236, R-41344 and R-41620 still lack evidence for a distinct root cause. The export classifies them under parser with a caveat; the engineering update does not independently diagnose each one. Preserve the evidence if any symptom continues after the fix.
 
-The five desk-note reports R-41202, R-41209, R-41236, R-41344 and R-41620 describe one-day shifts or unusual timing. The current classifier files them under parser; the table footnotes them there. Their words do not establish another root cause. Keep these IDs and investigate timestamps, time zones and invite payloads before reclassifying. Do not silently exclude them or claim a time-zone fix is proven.
-
-The export contains overlapping pages. Count each report ID once, not every row. Different report IDs remain separate reports even if their text is identical.
-
-Received is not merged
-03-30
-04-27
-05-25
-06-22
-07-20
-08-17
-09-14
- received ·  merged into #4471 · per week
-
-Reports arrived from April onward, but the desk only merged the accumulated queue in July. That merge spike is desk activity, not evidence that the defect started then. Reports continued afterward; “known” is not “fixed.” These views describe the 4 October export, not a live feed. Refresh the export and rerun before relying on its totals for today’s desk.
-
-Replacement triage rule
-
-Read the report, resolve its tenant, and compare the affected path and cause with the open ticket. Merge only when the cause matches. Matching subjects alone do not prove duplication; different subjects alone do not prove separate problems.
-
-For an unknown tenant or conflicting symptoms, keep the report separate pending investigation. Never merge merely because the subject matches. The old triage page and decision 0001 are historical advice superseded by this record.
-
-report A
-alder.physio
-copper.studio
-harbour.dental
-kettle.books
-lantern.row
-long.table
-morrow.tax
-nine.lanterns
-pale.harbour
-ridge.clinic
-stone.and.sons
-app
-email
-form
-hint
-report B
-alder.physio
-copper.studio
-harbour.dental
-kettle.books
-lantern.row
-long.table
-morrow.tax
-nine.lanterns
-pale.harbour
-ridge.clinic
-stone.and.sons
-app
-email
-form
-parser
-
-different causes — keep apart
-
-case	same subject	same cause
-app vs email, same tenant	no	yes
-same subject, same tenant, different channel	yes	no
-same subject, same channel, different tenant	yes	no
-different subject, same way in	no	yes
-no tenant on file	yes	no
-The old pages have recent-looking prose and accepted statuses, but those are not proof that their advice is correct. The triage rule and decision 0001 were last reviewed in 2024; the layout flags them as stale. Check the rendered evidence.
-Separate fixes and checks
-
-For the parser, resolve the tenant locale explicitly or accept an unambiguous ISO date; preserve the intended calendar date through parsing and invite generation. Test day-first dates such as 07/04/2026 against month-first control locales.
-
-For booking-v3, make the displayed hint agree with the date order the form accepts. Test form submissions for Alder Physio, Copper Studio and Pale Harbour separately from their app and email reports; those other channels still follow the parser path. Check booking-v2 as a regression control. A parser fix alone does not establish that the hint is fixed.
-
-Maintenance
-
-Keep computed values in components, not prose. Rebuild the page when reports or tenant settings change. Review the split after fixes and retain the anomalous reports until their evidence supports a diagnosis.
+The published counts are deduplicated historical counts, not a live feed. Refresh reports and tenant settings before making new claims about today’s queue.
 
 desk ref DR-4PE9-3BTB
 

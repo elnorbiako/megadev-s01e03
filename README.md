@@ -37,8 +37,9 @@ Exported 2026-10-04 from the `support` repo, `apps/kb/` → `src/`.
 
 ## S01E03 review — elnorbiako
 
-- [New signed page source](src/routes/kb/decisions/0002-dedupe-by-cause/+page.svx)
-- [Rendered HTML](docs/kb/decisions/0002-dedupe-by-cause/index.html) (serve `docs/` to load its styles and interactions)
+- [Current signed outcome page](src/routes/kb/incidents/4471-outcome/+page.svx)
+- [Original signed analysis and decision](src/routes/kb/decisions/0002-dedupe-by-cause/+page.svx)
+- [Rendered HTML](docs/kb/incidents/4471-outcome/index.html) (serve `docs/` to load its styles and interactions)
 - [Rendered screenshot](rendered/4471-review.png)
 - [Parser issue](https://github.com/elnorbiako/megadev-s01e03/issues/1)
 - [Hint issue](https://github.com/elnorbiako/megadev-s01e03/issues/2)
@@ -56,7 +57,9 @@ npm run build
 npm run preview -- --port 4173
 ```
 
-Open http://127.0.0.1:4173/kb/decisions/0002-dedupe-by-cause/.
+Open http://127.0.0.1:4173/kb/incidents/4471-outcome/.
+The 5 October desk update says the parser was fixed (completed), while the
+booking-v3 hint will not be fixed because the form was retired (not planned).
 The static site is committed under `docs/`; no public web host is required.
 The date of review is the session's current date; data remains the 4 October export.
 The original accepted decision is unchanged. The new record supersedes its advice.

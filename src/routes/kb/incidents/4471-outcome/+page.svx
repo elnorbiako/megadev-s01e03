@@ -1,0 +1,58 @@
+---
+layout: runbook
+title: '#4471 · closure outcomes and desk guidance'
+owner: elnorbiako
+status: closed
+reviewed: '2026-10-29'
+signature: 'elnorbiako · S01E03 · 2026-10-29'
+---
+
+<script>
+  import ClosureTable from '#lib/kb/ClosureTable.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+</script>
+
+## Current outcome
+
+The [course desk update](https://hq.mega.dev/challenges/what-it-shows) reports that
+#4471 closed on 5 October. Its two problems ended differently:
+
+<ClosureTable />
+
+<Callout kind="warn">
+The parser was fixed. The hint was not fixed: booking-v3 was retired, and engineering
+chose not to fix it. Closed does not mean that both defects were repaired.
+</Callout>
+
+## What changed since the export
+
+The export ends on 4 October. The engineering update is later evidence about
+closure, not a change to the original report counts or tenant directory.
+The cause split and complete report membership remain in the
+[signed analysis and replacement triage decision](/kb/decisions/0002-dedupe-by-cause/).
+
+That accepted decision remains unchanged as the historical record of our analysis.
+This page supersedes its pending-fix guidance with the later closure outcomes.
+Do not present the original “known, one fix queued” incident page as current status.
+
+## Desk guidance
+
+For the shared parser, record the engineering fix and close its ticket as completed.
+For the booking-v3 hint, record form retirement and close its ticket as not planned,
+not completed. Do not equate retiring a feature with correcting its behavior.
+
+Continue triaging reports by verified cause and affected path, not matching subjects
+or browser-derived intake tags. For reports arriving after closure, check the deployed
+parser version and whether the reporter still uses a retired form before merging.
+Unknown tenants and conflicting evidence remain separate pending investigation.
+
+The five desk-note reports R-41202, R-41209, R-41236, R-41344 and R-41620 still
+lack evidence for a distinct root cause. The export classifies them under parser
+with a caveat; the engineering update does not independently diagnose each one.
+Preserve the evidence if any symptom continues after the fix.
+
+The published counts are deduplicated historical counts, not a live feed.
+Refresh reports and tenant settings before making new claims about today's queue.
+
+<RenderStamp {signature} />

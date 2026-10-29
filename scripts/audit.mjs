@@ -35,4 +35,10 @@ if (existsSync(rendered)) {
   assert.ok(!html.includes("no desk ref:"));
   console.log('PASS: actual rendered counts and derived signature', deskRef(signature));
 }
+const outcomeHtml = new URL('../docs/kb/incidents/4471-outcome/index.html', import.meta.url);
+if (existsSync(outcomeHtml)) {
+  const html = readFileSync(outcomeHtml, 'utf8');
+  for (const text of ['379', '33', 'completed', 'not planned', 'booking-v3 form retired', 'DR-4PE9-3BTB']) assert.ok(html.includes(text), text);
+  console.log('PASS: rendered outcome preserves distinct closure reasons');
+}
 console.log('PASS: unique counts, duplicate consistency, tenant-based causes, misleading tags, anomalous reports, dedupe boundaries');
