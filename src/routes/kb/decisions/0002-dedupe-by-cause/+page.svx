@@ -1,0 +1,97 @@
+---
+layout: runbook
+title: '0002 · Split #4471 and deduplicate by cause'
+owner: elnorbiako
+status: accepted
+reviewed: '2026-10-29'
+signature: 'elnorbiako · S01E03 · 2026-10-29'
+---
+
+<script>
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import QueueTimeline from '#lib/kb/QueueTimeline.svelte';
+  import DedupeExplorer from '#lib/kb/DedupeExplorer.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+</script>
+
+**Replaces:** [decision 0001](/kb/decisions/0001-dedupe-by-subject).
+The accepted original remains unchanged as the historical record.
+
+## What the desk should do now
+
+Do not treat [#4471](/kb/incidents/4471) as one known problem. Split its reports into
+the shared parser issue and the booking-v3 date-hint issue. The table below computes
+the counts from unique report IDs, tenant locales and booking forms.
+
+- [Parser ticket](https://github.com/elnorbiako/megadev-s01e03/issues/1): the shared parser reads month first although these tenants write day first.
+- [Hint ticket](https://github.com/elnorbiako/megadev-s01e03/issues/2): booking-v3 prints MM/DD/YYYY while its form reads dates in the tenant's day-first order.
+
+<CauseTable ticket={4471} />
+
+The intake tag is a browser-based guess, not a diagnosis. Classify using the tenant's
+locale and booking form, together with the report's channel. Use the actual runtime
+logic in causes.ts and locales.ts rather than a second hand-maintained list.
+
+## Evidence and limits
+
+Parser example R-41200: Harbour Dental (en-GB, booking-v2, app) intended 7 April;
+the reminder used 4 July. Hint example R-41230: Copper Studio (es-ES, booking-v3,
+form) intended 6 January; the client came on 1 June.
+
+The five desk-note reports R-41202, R-41209, R-41236, R-41344 and R-41620 describe
+one-day shifts or unusual timing. The current classifier files them under parser;
+the table footnotes them there. Their words do not establish another root cause.
+Keep these IDs and investigate timestamps, time zones and invite payloads before
+reclassifying. Do not silently exclude them or claim a time-zone fix is proven.
+
+The export contains overlapping pages. Count each report ID once, not every row.
+Different report IDs remain separate reports even if their text is identical.
+
+## Received is not merged
+
+<QueueTimeline ticket={4471} />
+
+Reports arrived from April onward, but the desk only merged the accumulated queue
+in July. That merge spike is desk activity, not evidence that the defect started
+then. Reports continued afterward; “known” is not “fixed.” These views describe the
+4 October export, not a live feed. Refresh the export and rerun before relying on
+its totals for today's desk.
+
+## Replacement triage rule
+
+Read the report, resolve its tenant, and compare the affected path and cause with
+the open ticket. Merge only when the cause matches. Matching subjects alone do not
+prove duplication; different subjects alone do not prove separate problems.
+
+For an unknown tenant or conflicting symptoms, keep the report separate pending
+investigation. Never merge merely because the subject matches. The old triage page
+and decision 0001 are historical advice superseded by this record.
+
+<DedupeExplorer />
+
+<Callout kind="warn">
+The old pages have recent-looking prose and accepted statuses, but those are not
+proof that their advice is correct. The triage rule and decision 0001 were last
+reviewed in 2024; the layout flags them as stale. Check the rendered evidence.
+</Callout>
+
+## Separate fixes and checks
+
+For the parser, resolve the tenant locale explicitly or accept an unambiguous ISO
+date; preserve the intended calendar date through parsing and invite generation.
+Test day-first dates such as 07/04/2026 against month-first control locales.
+
+For booking-v3, make the displayed hint agree with the date order the form accepts.
+Test form submissions for Alder Physio, Copper Studio and Pale Harbour separately
+from their app and email reports; those other channels still follow the parser path.
+Check booking-v2 as a regression control. A parser fix alone does not establish
+that the hint is fixed.
+
+## Maintenance
+
+Keep computed values in components, not prose. Rebuild the page when reports or
+tenant settings change. Review the split after fixes and retain the anomalous
+reports until their evidence supports a diagnosis.
+
+<RenderStamp {signature} />

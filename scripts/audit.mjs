@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
+import { deskRef } from '../src/lib/kb/desk-ref.ts';
+import { uniqueById, groupByCause, readAs, sameCause } from '../src/lib/kb/causes.ts';
+const json = p => JSON.parse(readFileSync(new URL(p, import.meta.url), 'utf8'));
+const reports = json('../src/lib/data/reports-4471.json');
+const notes = json('../src/lib/data/desk-notes.json');
+const dir = new URL('../src/lib/data/tenants/', import.meta.url);
+const tenants = new Map(readdirSync(dir).map(f => { const t = JSON.parse(readFileSync(new URL(f, dir), 'utf8')); return [t.handle, t]; }));
+const unique = uniqueById(reports);
+for (const r of reports) assert.deepEqual(r, unique.find(x => x.id === r.id), 'Conflicting duplicate ' + r.id);
+const merged = unique.filter(r => r.mergedInto === 4471);
+const groups = groupByCause(merged, r => tenants.get(r.tenant));
+const summary = groups.map(({ reports: rs, ...g }) => ({...g, count: rs.length, readAsOneDayMove: readAs({reports: rs}, notes.oneDayMove), ids: rs.map(r => r.id)}));
+assert.equal(reports.length, 427);
+assert.equal(unique.length, 412);
+assert.equal(merged.length, 412);
+assert.deepEqual(groups.map(g => [g.cause, g.reports.length]), [['parser',379], ['hint',33]]);
+assert.equal(summary.reduce((n,g) => n + g.readAsOneDayMove, 0), 5);
+assert.equal(groups.flatMap(g => g.reports).filter(r => r.meta.intakeTag !== groups.find(g => g.reports.includes(r)).cause).length, 38);
+assert.equal(sameCause({channel:'form'}, tenants.get('alder.physio'), {channel:'app'}, tenants.get('alder.physio')), false);
+assert.equal(sameCause({channel:'app'}, tenants.get('kettle.books'), {channel:'email'}, tenants.get('kettle.books')), true);
+assert.equal(sameCause({channel:'email'}, undefined, {channel:'email'}, undefined), false);
+writeFileSync(new URL('../audit.json', import.meta.url), JSON.stringify({source:'2026-10-04 export; not a live feed',rows:reports.length,unique:unique.length,duplicateRows:reports.length-unique.length,groups:summary},null,2)+'\n');
+for(const g of summary) console.log(g.cause, g.count, 'reports;', g.readAsOneDayMove, 'one-day notes;',g.taggedAs);
+const rendered = new URL('../docs/kb/decisions/0002-dedupe-by-cause/index.html', import.meta.url);
+if (existsSync(rendered)) {
+  const html = readFileSync(rendered, 'utf8');
+  assert.match(html, /412<\/strong> reports merged into #4471/);
+  assert.match(html, />379<\/td>/);
+  assert.match(html, />33<\/td>/);
+  const page = readFileSync(new URL('../src/routes/kb/decisions/0002-dedupe-by-cause/+page.svx', import.meta.url), 'utf8');
+  const signature = page.match(/^signature: '(.+)'$/m)[1];
+  assert.ok(html.includes(deskRef(signature)), 'Rendered desk ref must come from actual page signature');
+  assert.ok(!html.includes("no desk ref:"));
+  console.log('PASS: actual rendered counts and derived signature', deskRef(signature));
+}
+console.log('PASS: unique counts, duplicate consistency, tenant-based causes, misleading tags, anomalous reports, dedupe boundaries');
