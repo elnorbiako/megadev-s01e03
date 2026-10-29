@@ -38,7 +38,9 @@ if (existsSync(rendered)) {
 const outcomeHtml = new URL('../docs/kb/incidents/4471-outcome/index.html', import.meta.url);
 if (existsSync(outcomeHtml)) {
   const html = readFileSync(outcomeHtml, 'utf8');
-  for (const text of ['379', '33', 'completed', 'not planned', 'booking-v3 form retired', 'DR-4PE9-3BTB']) assert.ok(html.includes(text), text);
+  const source = readFileSync(new URL('../src/routes/kb/incidents/4471-outcome/+page.svx', import.meta.url), 'utf8');
+  const signature = source.match(/^signature: '(.+)'$/m)[1];
+  for (const text of ['379', '33', 'completed', 'not planned', 'booking-v3 form retired', deskRef(signature)]) assert.ok(html.includes(text), text);
   console.log('PASS: rendered outcome preserves distinct closure reasons');
 }
 console.log('PASS: unique counts, duplicate consistency, tenant-based causes, misleading tags, anomalous reports, dedupe boundaries');

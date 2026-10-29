@@ -4,7 +4,7 @@ title: '#4471 · closure outcomes and desk guidance'
 owner: elnorbiako
 status: closed
 reviewed: '2026-10-29'
-signature: 'elnorbiako · S01E03 · 2026-10-29'
+signature: 'v1.eyJzdWIiOiIzMjg4IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTMyNzcxNjYsImV4cCI6MTc5MzM2MzU2Nn0.AeMDdb3360iFofMd_HaG-1Rzlj8C7ohFuVF3TgK5LSs'
 ---
 
 <script>
